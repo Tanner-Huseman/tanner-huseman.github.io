@@ -84,16 +84,24 @@ const projects = [
   ).matches;
 
   if (!prefersReducedMotion) {
-    gsap.from('#projects-grid .project-card', {
-      opacity: 0,
-      y: 50,
-      duration: 0.7,
-      stagger: 0.1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: '#projects-grid',
-        start: 'top 80%',
-      },
-    });
+    gsap.fromTo(
+      '#projects-grid .project-card',
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#projects-grid',
+          start: 'top 85%',
+          invalidateOnRefresh: true,
+        },
+      }
+    );
+
+    // Refresh positions after StoryTimeline pin spacers are inserted
+    setTimeout(() => ScrollTrigger.refresh(), 500);
   }
 </script>
