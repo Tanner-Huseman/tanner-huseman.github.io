@@ -42,22 +42,98 @@ const navLinks = [
     LinkedIn
   </a>
 
-  <!-- Mobile menu button (expand later) -->
+  <!-- Mobile menu button -->
   <button
-    class="md:hidden flex flex-col gap-1.5 p-2"
+    class="md:hidden flex flex-col gap-1.5 p-2 relative z-50"
     aria-label="Open menu"
+    aria-expanded="false"
+    aria-controls="mobile-menu"
     id="mobile-menu-btn"
   >
-    <span class="w-6 h-px bg-text block"></span>
-    <span class="w-6 h-px bg-text block"></span>
-    <span class="w-4 h-px bg-text block"></span>
+    <span id="bar1" class="w-6 h-px bg-text block transition-all duration-300 origin-center"></span>
+    <span id="bar2" class="w-6 h-px bg-text block transition-all duration-300"></span>
+    <span id="bar3" class="w-4 h-px bg-text block transition-all duration-300 origin-center"></span>
   </button>
 </nav>
 
-<!-- Nav scroll behavior: add backdrop-blur when scrolled -->
+<!-- Mobile menu panel -->
+<div
+  id="mobile-menu"
+  class="md:hidden fixed inset-x-0 top-0 z-40 pt-20 pb-8 px-8 bg-bg/95 backdrop-blur-md border-b border-border"
+  style="transform: translateY(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); pointer-events: none;"
+  aria-hidden="true"
+>
+  <ul class="flex flex-col gap-1 list-none m-0 p-0 mb-8">
+    {navLinks.map(({ label, href }) => (
+      <li>
+        <a
+          href={href}
+          class="mobile-nav-link font-body text-2xl font-medium text-muted hover:text-text transition-colors block py-3 border-b border-border/40"
+        >
+          {label}
+        </a>
+      </li>
+    ))}
+  </ul>
+  <a
+    href="https://www.linkedin.com/in/tanner-huseman"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="mobile-nav-link inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium border border-accent/40 text-accent hover:bg-accent hover:text-white transition-all duration-200"
+  >
+    LinkedIn ↗
+  </a>
+</div>
+
+<!-- Nav scroll behavior + mobile menu toggle -->
 <script>
   const nav = document.getElementById('nav');
+  const btn = document.getElementById('mobile-menu-btn') as HTMLButtonElement;
+  const menu = document.getElementById('mobile-menu') as HTMLElement;
+  const bar1 = document.getElementById('bar1') as HTMLElement;
+  const bar2 = document.getElementById('bar2') as HTMLElement;
+  const bar3 = document.getElementById('bar3') as HTMLElement;
 
+  let isOpen = false;
+
+  function openMenu() {
+    isOpen = true;
+    menu.style.transform = 'translateY(0)';
+    menu.style.pointerEvents = 'auto';
+    menu.setAttribute('aria-hidden', 'false');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.setAttribute('aria-label', 'Close menu');
+    // Animate to X
+    bar1.style.transform = 'translateY(6px) rotate(45deg)';
+    bar2.style.opacity = '0';
+    bar3.style.transform = 'translateY(-6px) rotate(-45deg)';
+    bar3.style.width = '24px'; // match bar1 width
+  }
+
+  function closeMenu() {
+    isOpen = false;
+    menu.style.transform = 'translateY(-100%)';
+    menu.style.pointerEvents = 'none';
+    menu.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', 'Open menu');
+    // Restore hamburger
+    bar1.style.transform = '';
+    bar2.style.opacity = '1';
+    bar3.style.transform = '';
+    bar3.style.width = '16px';
+  }
+
+  btn?.addEventListener('click', () => {
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  // Close on any nav link click
+  menu?.querySelectorAll('.mobile-nav-link').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Nav scroll behavior: add backdrop-blur when scrolled
   const observer = new IntersectionObserver(
     ([entry]) => {
       nav?.classList.toggle('bg-bg/80', !entry.isIntersecting);
@@ -68,7 +144,6 @@ const navLinks = [
     { rootMargin: '-80px 0px 0px 0px' }
   );
 
-  // Observe the hero section
   const hero = document.getElementById('hero');
   if (hero) observer.observe(hero);
 </script>
