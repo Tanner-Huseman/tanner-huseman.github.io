@@ -1,0 +1,73 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  tags: string[];
+  href: string;
+  /** CSS gradient string for the top accent stripe, e.g. 'linear-gradient(90deg, #6c5ce7, #f5a623)' */
+  gradient?: string;
+  /** Alt text for the preview image */
+  previewAlt?: string;
+  /** Path to a preview image — optional */
+  previewSrc?: string;
+}
+
+const {
+  title,
+  summary,
+  tags,
+  href,
+  gradient = 'linear-gradient(90deg, var(--color-accent), var(--color-highlight))',
+  previewAlt = '',
+  previewSrc,
+} = Astro.props;
+---
+
+<article class="project-card group relative flex flex-col rounded-card border border-border bg-surface overflow-hidden hover:border-accent/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(108,92,231,0.15)]">
+  <!-- Top accent stripe -->
+  <div
+    class="h-0.5 w-full flex-shrink-0"
+    style={`background: ${gradient};`}
+    aria-hidden="true"
+  ></div>
+
+  <!-- Preview image (optional) -->
+  {previewSrc && (
+    <div class="overflow-hidden bg-[#0f0f18] border-b border-border" style="height: 180px;">
+      <img
+        src={previewSrc}
+        alt={previewAlt}
+        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )}
+
+  <!-- Content -->
+  <div class="flex flex-col flex-1 p-7">
+    <h3 class="font-display text-xl text-text mb-3 group-hover:text-accent transition-colors duration-200">
+      {title}
+    </h3>
+    <p class="font-body text-sm text-muted leading-relaxed mb-6 flex-1">
+      {summary}
+    </p>
+
+    <!-- Tech pills -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      {tags.map((tag) => (
+        <span class="tech-pill">{tag}</span>
+      ))}
+    </div>
+
+    <!-- Link -->
+    <a
+      href={href}
+      class="inline-flex items-center gap-2 font-mono text-xs text-accent hover:text-highlight transition-colors"
+      aria-label={`View ${title}`}
+    >
+      View project
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</article>

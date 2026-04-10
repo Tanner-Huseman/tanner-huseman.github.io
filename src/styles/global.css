@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-bg: #0a0a0f;
+  --color-surface: #14141f;
+  --color-surface-hover: #1a1a28;
+  --color-border: #252535;
+  --color-text: #e8e8f0;
+  --color-text-muted: #8888a0;
+  --color-accent: #6c5ce7;
+  --color-accent-dim: rgba(108, 92, 231, 0.12);
+  --color-highlight: #f5a623;
+  --color-highlight-dim: rgba(245, 166, 35, 0.10);
+  --color-success: #00d2a0;
+  --color-link: #4facfe;
+
+  /* Typography */
+  --font-display: 'Playfair Display', 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', Satoshi, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing */
+  --space-section: 10rem;
+
+  /* Animation durations */
+  --duration-fast: 0.2s;
+  --duration-normal: 0.4s;
+  --duration-slow: 0.8s;
+  --duration-dramatic: 1.2s;
+
+  /* Easing */
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --ease-dramatic: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ── Base Resets ────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    scroll-behavior: auto; /* Lenis handles smooth scroll */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background-color: var(--color-bg);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+
+  code, pre, kbd {
+    font-family: var(--font-mono);
+  }
+
+  /* Skip to content (accessibility) */
+  .skip-to-content {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 9999;
+    padding: 0.5rem 1rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 0 0 8px 8px;
+    transition: top 0.2s;
+  }
+
+  .skip-to-content:focus {
+    top: 0;
+  }
+}
+
+/* ── Components ─────────────────────────────────────────────── */
+@layer components {
+  /* Tech stack pills */
+  .tech-pill {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-text-muted);
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  /* Section heading style */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-highlight));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* ── Reduced Motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* GSAP animations are disabled via JS — see animations.ts */
+}

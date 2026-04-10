@@ -1,0 +1,99 @@
+---
+import ProjectCard from './ProjectCard.astro';
+
+const projects = [
+  {
+    title: 'dbt Financial Data Platform',
+    summary:
+      'Production-grade dbt Core project modeling a realistic financial dataset. Staging → intermediate → mart architecture with SCD Type 2 snapshots, custom tests, and auto-generated docs.',
+    tags: ['dbt Core', 'SQL', 'DuckDB', 'GitHub Actions', 'SCD Type 2'],
+    href: '/projects/dbt-platform',
+    gradient: 'linear-gradient(90deg, #FF694A, #f5a623)',
+  },
+  {
+    title: 'AI Agent Toolkit',
+    summary:
+      'Composable Python library of AI agent skills built on the Claude API. DocGen, Code Review, and Content Writer agents with typed I/O, retry logic, and full test coverage.',
+    tags: ['Python', 'Claude API', 'LangGraph', 'Pydantic', 'Pytest'],
+    href: '/projects/ai-agents',
+    gradient: 'linear-gradient(90deg, #6c5ce7, #4facfe)',
+  },
+  {
+    title: 'Local Data Platform on Kubernetes',
+    summary:
+      'Fully containerized local data platform mirroring production: Kind cluster, ArgoCD GitOps, Airflow + dbt orchestration, LocalStack, Prometheus/Grafana monitoring.',
+    tags: ['Kubernetes', 'ArgoCD', 'Helm', 'Airflow', 'Docker', 'LocalStack'],
+    href: '/projects/k8s-platform',
+    gradient: 'linear-gradient(90deg, #326CE5, #00d2a0)',
+  },
+  {
+    title: 'Serverless Real Estate Data API',
+    summary:
+      'Production-style serverless API serving curated real estate data. FastAPI on Lambda, DynamoDB single-table design, Terraform IaC, auto-generated OpenAPI docs.',
+    tags: ['FastAPI', 'AWS Lambda', 'DynamoDB', 'Terraform', 'Python'],
+    href: '/projects/serverless-api',
+    gradient: 'linear-gradient(90deg, #FF9900, #FF694A)',
+  },
+  {
+    title: 'How I Built This Portfolio with AI',
+    summary:
+      'A 2,500-word technical article documenting the engineering process: why Astro + GSAP + Three.js, the AI-assisted development workflow, and lessons learned.',
+    tags: ['Technical Writing', 'Astro', 'MDX', 'GSAP', 'AI Workflow'],
+    href: '/articles/how-i-built-this',
+    gradient: 'linear-gradient(90deg, #f5a623, #6c5ce7)',
+  },
+  {
+    title: 'This Portfolio Site',
+    summary:
+      'Open-sourced Astro static site with GSAP ScrollTrigger animations, Three.js orbiting logos, Lighthouse 95+ performance, and GitHub Actions auto-deploy.',
+    tags: ['Astro', 'React', 'GSAP', 'Three.js', 'Tailwind', 'GitHub Pages'],
+    href: 'https://github.com/tanner-huseman/tanner-huseman.github.io',
+    gradient: 'linear-gradient(90deg, #00d2a0, #4facfe)',
+  },
+];
+---
+
+<section id="projects" class="py-section px-6 md:px-16 max-w-7xl mx-auto">
+  <!-- Section header -->
+  <div class="mb-16">
+    <p class="section-label mb-4">What I've built</p>
+    <h2 class="font-display text-4xl md:text-5xl text-text max-w-xl">
+      Projects
+    </h2>
+  </div>
+
+  <!-- Grid -->
+  <div
+    id="projects-grid"
+    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+  >
+    {projects.map((project) => (
+      <ProjectCard {...project} />
+    ))}
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  if (!prefersReducedMotion) {
+    gsap.from('#projects-grid .project-card', {
+      opacity: 0,
+      y: 50,
+      duration: 0.7,
+      stagger: 0.1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#projects-grid',
+        start: 'top 80%',
+      },
+    });
+  }
+</script>

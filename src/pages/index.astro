@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import StoryTimeline from '../components/StoryTimeline';
+import OrbitingLogos from '../components/OrbitingLogos';
+import SkillsCarousel from '../components/SkillsCarousel';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import ArticleList from '../components/ArticleList.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout>
+  <Nav />
+
+  <main id="main">
+
+    <!-- ── 1. Hero ──────────────────────────────────────────────── -->
+    <Hero />
+
+    <!-- ── 2. Story ─────────────────────────────────────────────── -->
+    <section id="story" class="relative">
+      <!-- Section header -->
+      <div class="px-6 md:px-16 pt-section pb-16 max-w-7xl mx-auto">
+        <p class="section-label mb-4">The journey</p>
+        <h2 class="font-display text-4xl md:text-5xl text-text max-w-2xl">
+          Not exactly a typical path.
+        </h2>
+      </div>
+
+      <!-- Scroll-triggered career timeline (React island) -->
+      <div class="px-6 md:px-16 max-w-7xl mx-auto">
+        <StoryTimeline client:visible />
+      </div>
+
+      <!-- Three.js orbiting logos scene (React island) -->
+      <div class="px-6 md:px-16 py-24 max-w-7xl mx-auto">
+        <p class="section-label mb-12 text-center">The stack</p>
+        <OrbitingLogos client:visible />
+      </div>
+    </section>
+
+    <!-- ── 3. Skills ─────────────────────────────────────────────── -->
+    <section id="skills-section" class="overflow-hidden">
+      <div class="px-6 md:px-16 pt-section pb-16 max-w-7xl mx-auto">
+        <p class="section-label mb-4">What I build with</p>
+        <h2 class="font-display text-4xl md:text-5xl text-text max-w-xl">
+          What I build.
+        </h2>
+      </div>
+
+      <!-- Horizontal scroll on desktop, vertical stack on mobile -->
+      <div class="px-6 md:px-16 pb-section overflow-x-auto md:overflow-visible">
+        <SkillsCarousel client:visible />
+      </div>
+    </section>
+
+    <!-- ── 4. Projects ───────────────────────────────────────────── -->
+    <ProjectGrid />
+
+    <!-- ── 5. Writing ────────────────────────────────────────────── -->
+    <ArticleList />
+
+    <!-- ── 6. Connect ────────────────────────────────────────────── -->
+    <Footer />
+
+  </main>
+</BaseLayout>

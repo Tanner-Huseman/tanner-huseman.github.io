@@ -1,0 +1,63 @@
+---
+// TODO: Replace hardcoded articles with Astro content collections
+// import { getCollection } from 'astro:content';
+// const articles = await getCollection('articles');
+
+const articles = [
+  {
+    title: 'How I Built This Portfolio with AI',
+    date: 'Coming soon',
+    description:
+      'The architecture decisions, AI-assisted workflow, and engineering practices behind this site — from Astro + GSAP + Three.js to Claude Code.',
+    tags: ['Astro', 'GSAP', 'AI', 'Technical Writing'],
+    href: '/articles/how-i-built-this',
+    status: 'draft' as const,
+  },
+];
+---
+
+<section id="writing" class="py-section px-6 md:px-16 max-w-4xl mx-auto">
+  <div class="mb-16">
+    <p class="section-label mb-4">Thinking out loud</p>
+    <h2 class="font-display text-4xl md:text-5xl text-text">Writing</h2>
+  </div>
+
+  <div class="space-y-6">
+    {articles.map((article) => (
+      <article
+        class="group p-8 rounded-card border border-border bg-surface hover:border-accent/40 transition-all duration-300"
+      >
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h3 class="font-display text-2xl text-text group-hover:text-accent transition-colors">
+            {article.title}
+          </h3>
+          <time class="font-mono text-xs text-muted flex-shrink-0 mt-1.5">
+            {article.date}
+          </time>
+        </div>
+        <p class="font-body text-muted leading-relaxed mb-5">
+          {article.description}
+        </p>
+        <div class="flex items-center justify-between">
+          <div class="flex flex-wrap gap-2">
+            {article.tags.map((tag) => (
+              <span class="tech-pill">{tag}</span>
+            ))}
+          </div>
+          {article.status === 'draft' ? (
+            <span class="font-mono text-xs text-muted border border-border px-2 py-1 rounded">
+              In progress
+            </span>
+          ) : (
+            <a
+              href={article.href}
+              class="font-mono text-xs text-accent hover:text-highlight transition-colors"
+            >
+              Read →
+            </a>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,74 @@
+---
+const navLinks = [
+  { label: 'Story', href: '#story' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Writing', href: '#writing' },
+  { label: 'Connect', href: '#connect' },
+];
+---
+
+<nav
+  id="nav"
+  class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5 transition-all duration-300"
+  aria-label="Main navigation"
+>
+  <!-- Logo / name -->
+  <a href="#" class="font-display text-lg font-bold text-text hover:text-accent transition-colors">
+    TH
+  </a>
+
+  <!-- Desktop links -->
+  <ul class="hidden md:flex items-center gap-8 list-none m-0 p-0">
+    {navLinks.map(({ label, href }) => (
+      <li>
+        <a
+          href={href}
+          class="font-body text-sm font-medium text-muted hover:text-text transition-colors"
+        >
+          {label}
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <!-- CTA -->
+  <a
+    href="https://www.linkedin.com/in/tanner-huseman"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border border-accent/40 text-accent hover:bg-accent hover:text-white transition-all duration-200"
+  >
+    LinkedIn
+  </a>
+
+  <!-- Mobile menu button (expand later) -->
+  <button
+    class="md:hidden flex flex-col gap-1.5 p-2"
+    aria-label="Open menu"
+    id="mobile-menu-btn"
+  >
+    <span class="w-6 h-px bg-text block"></span>
+    <span class="w-6 h-px bg-text block"></span>
+    <span class="w-4 h-px bg-text block"></span>
+  </button>
+</nav>
+
+<!-- Nav scroll behavior: add backdrop-blur when scrolled -->
+<script>
+  const nav = document.getElementById('nav');
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      nav?.classList.toggle('bg-bg/80', !entry.isIntersecting);
+      nav?.classList.toggle('backdrop-blur-md', !entry.isIntersecting);
+      nav?.classList.toggle('border-b', !entry.isIntersecting);
+      nav?.classList.toggle('border-border', !entry.isIntersecting);
+    },
+    { rootMargin: '-80px 0px 0px 0px' }
+  );
+
+  // Observe the hero section
+  const hero = document.getElementById('hero');
+  if (hero) observer.observe(hero);
+</script>
