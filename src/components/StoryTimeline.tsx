@@ -151,21 +151,24 @@ export default function StoryTimeline() {
           className="relative min-h-screen overflow-hidden flex flex-col"
           style={{ background: 'var(--color-bg)' }}
         >
-          {/* ── Mobile: photo strip at top ─────────────────────── */}
+          {/* ── Mobile: full-bleed background photo ────────────── */}
           {phase.photo && (
-            <div className="md:hidden relative flex-shrink-0 overflow-hidden" style={{ height: '220px' }}>
+            <div className="md:hidden absolute inset-0">
               <img
                 src={phase.photo.src}
                 alt={phase.photoAlt ?? ''}
                 className={`w-full h-full object-cover ${phase.photoPosition ?? 'object-center'}`}
-                style={{ filter: 'saturate(0.65) brightness(0.75)' }}
+                style={{ filter: 'saturate(0.7) brightness(0.6)' }}
                 loading="lazy"
                 decoding="async"
               />
-              {/* Gradient fades photo into dark background */}
+              {/* Gradient: solid dark at bottom (text stage), fades to transparent at top (photo visible) */}
               <div
                 className="absolute inset-0"
-                style={{ background: 'linear-gradient(to bottom, transparent 25%, #0a0a0f 90%)' }}
+                style={{
+                  background:
+                    'linear-gradient(to top, #0a0a0f 35%, rgba(10,10,15,0.88) 55%, rgba(10,10,15,0.35) 75%, transparent 100%)',
+                }}
               />
             </div>
           )}
@@ -204,8 +207,8 @@ export default function StoryTimeline() {
             aria-hidden="true"
           />
 
-          {/* Text content — flex-1 so it fills remaining height on mobile */}
-          <div className="relative z-10 px-8 md:px-16 max-w-xl flex-1 flex flex-col justify-center py-10 md:py-24">
+          {/* Text content — anchored to bottom on mobile (over gradient stage), centered on desktop */}
+          <div className="relative z-10 px-8 md:px-16 max-w-xl flex-1 flex flex-col justify-end pb-16 md:justify-center md:py-24">
             {/* Phase label + period */}
             <p
               className="phase-animate font-mono text-xs tracking-widest uppercase mb-5"
