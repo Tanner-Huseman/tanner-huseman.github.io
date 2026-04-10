@@ -13,6 +13,7 @@
  */
 
 import React from 'react';
+import headshotImg from '../assets/images/headshot.jpeg';
 
 const logos = [
   { name: 'AWS', color: '#FF9900' },
@@ -65,10 +66,14 @@ export default function OrbitingLogos() {
       aria-label="Tech stack orbit visualization — coming soon"
     >
       {/* Placeholder until R3F scene is built */}
-      <div className="relative w-40 h-40 rounded-full border-2 border-accent/30 flex items-center justify-center">
-        <div className="w-32 h-32 rounded-full bg-surface border border-border flex items-center justify-center">
-          <span className="font-display text-2xl text-muted">TH</span>
-        </div>
+      <div className="relative w-40 h-40 rounded-full border-2 border-accent/30 flex items-center justify-center"
+        style={{ boxShadow: '0 0 40px rgba(108,92,231,0.25)' }}>
+        <img
+          src={headshotImg.src}
+          alt="Tanner Huseman"
+          className="w-36 h-36 rounded-full object-cover object-top"
+          draggable={false}
+        />
       </div>
 
       {/* Orbit ring (CSS, will be replaced by Three.js) */}
