@@ -28,12 +28,13 @@ import Footer from '../components/Footer.astro';
         </h2>
       </div>
 
-      <!-- Scroll-triggered career timeline (React island) -->
-      <div class="px-6 md:px-16 max-w-7xl mx-auto">
-        <StoryTimeline client:visible />
-      </div>
+      <!--
+        StoryTimeline: client:load so GSAP pins are registered before the
+        user starts scrolling. The component handles its own reduced-motion check.
+      -->
+      <StoryTimeline client:load />
 
-      <!-- Three.js orbiting logos scene (React island) -->
+      <!-- Three.js orbiting logos scene — heavy, only load when visible -->
       <div class="px-6 md:px-16 py-24 max-w-7xl mx-auto">
         <p class="section-label mb-12 text-center">The stack</p>
         <OrbitingLogos client:visible />
@@ -41,7 +42,11 @@ import Footer from '../components/Footer.astro';
     </section>
 
     <!-- ── 3. Skills ─────────────────────────────────────────────── -->
-    <section id="skills-section" class="overflow-hidden">
+    <!--
+      No overflow-hidden here — GSAP's pinSpacing spacer element needs to be
+      visible in the normal flow. Overflow is handled inside the track div.
+    -->
+    <section id="skills-section">
       <div class="px-6 md:px-16 pt-section pb-16 max-w-7xl mx-auto">
         <p class="section-label mb-4">What I build with</p>
         <h2 class="font-display text-4xl md:text-5xl text-text max-w-xl">
@@ -49,9 +54,15 @@ import Footer from '../components/Footer.astro';
         </h2>
       </div>
 
-      <!-- Horizontal scroll on desktop, vertical stack on mobile -->
-      <div class="px-6 md:px-16 pb-section overflow-x-auto md:overflow-visible">
-        <SkillsCarousel client:visible />
+      <!--
+        Wrapper clips the horizontal overflow on desktop.
+        On mobile it becomes overflow-x-auto for manual swiping.
+        client:load so GSAP can measure scrollWidth at page load time.
+      -->
+      <div class="pb-section overflow-x-hidden">
+        <div class="px-6 md:px-16">
+          <SkillsCarousel client:load />
+        </div>
       </div>
     </section>
 

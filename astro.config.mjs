@@ -13,8 +13,8 @@ export default defineConfig({
   output: 'static',
   vite: {
     ssr: {
-      // three.js and lenis are client-only
-      noExternal: ['three', 'lenis'],
+      // These packages use CJS exports that break Astro's SSR pass
+      noExternal: ['three', 'lenis', 'gsap'],
     },
   },
 });
