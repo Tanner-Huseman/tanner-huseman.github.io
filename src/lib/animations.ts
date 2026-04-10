@@ -73,11 +73,15 @@ export function initSkillsCarousel(
   // On mobile, skip horizontal scroll — CSS handles vertical stack
   if (window.innerWidth < 768) return;
 
+  // Padding keeps the last card from butting against the viewport edge
+  const PADDING = 96;
   const trackWidth = track.scrollWidth;
   const viewportWidth = window.innerWidth;
-  const scrollDistance = trackWidth - viewportWidth + 128; // 128px padding
+  const scrollDistance = trackWidth - viewportWidth + PADDING;
 
-  gsap.to(track, {
+  if (scrollDistance <= 0) return; // all cards already fit — no pin needed
+
+  const tween = gsap.to(track, {
     x: -scrollDistance,
     ease: 'none',
     scrollTrigger: {
@@ -87,8 +91,11 @@ export function initSkillsCarousel(
       pin: true,
       scrub: 1,
       anticipatePin: 1,
+      invalidateOnRefresh: true, // recalculate on window resize
     },
   });
+
+  return tween;
 }
 
 /**

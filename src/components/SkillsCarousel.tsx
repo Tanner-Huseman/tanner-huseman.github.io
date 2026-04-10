@@ -1,18 +1,5 @@
-/**
- * SkillsCarousel — React island
- *
- * Apple-style horizontal scroll section. As the user scrolls vertically,
- * skill cards slide in horizontally (GSAP ScrollTrigger pin + horizontal tween).
- *
- * Desktop: pinned horizontal scroll
- * Mobile: vertical card stack
- *
- * TODO: Wire up GSAP ScrollTrigger pinning.
- *       The pin logic lives in src/lib/animations.ts — call initSkillsCarousel()
- *       from a useEffect here after the component mounts.
- */
-
-import React from 'react';
+import React, { useEffect } from 'react';
+import { initSkillsCarousel } from '../lib/animations';
 
 const skills = [
   {
@@ -84,16 +71,26 @@ const skills = [
 ];
 
 export default function SkillsCarousel() {
+  useEffect(() => {
+    // Small delay ensures GSAP/Lenis from BaseLayout is initialized
+    // and the DOM has fully painted before we measure scrollWidth
+    const timer = setTimeout(() => {
+      initSkillsCarousel('#skills-section', '#skills-track');
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div
       id="skills-track"
-      className="flex gap-6 md:flex-row flex-col"
+      className="flex gap-6 flex-col md:flex-row"
+      style={{ willChange: 'transform' }}
     >
       {skills.map((skill) => (
         <div
           key={skill.category}
-          className="flex-shrink-0 w-80 p-8 rounded-card border border-border bg-surface hover:border-accent/40 transition-colors duration-300"
-          style={{ minWidth: '320px' }}
+          className="flex-shrink-0 w-full md:w-80 p-8 rounded-card border border-border bg-surface hover:border-accent/40 transition-colors duration-300"
         >
           <div className="text-2xl mb-4 text-accent">{skill.icon}</div>
           <h3 className="font-display text-xl text-text mb-6">
@@ -101,7 +98,10 @@ export default function SkillsCarousel() {
           </h3>
           <ul className="space-y-3 list-none m-0 p-0">
             {skill.items.map((item) => (
-              <li key={item} className="flex items-start gap-2 font-body text-sm text-muted">
+              <li
+                key={item}
+                className="flex items-start gap-2 font-body text-sm text-muted"
+              >
                 <span className="text-accent mt-0.5 flex-shrink-0">·</span>
                 {item}
               </li>
