@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import StoryTimeline from '../components/StoryTimeline';
-import OrbitingLogos from '../components/OrbitingLogos';
 import SkillsCarousel from '../components/SkillsCarousel';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import ArticleList from '../components/ArticleList.astro';
@@ -34,11 +33,6 @@ import Footer from '../components/Footer.astro';
       -->
       <StoryTimeline client:load />
 
-      <!-- Three.js orbiting logos scene — heavy, only load when visible -->
-      <div class="px-6 md:px-16 py-24 max-w-7xl mx-auto">
-        <p class="section-label mb-12 text-center">The stack</p>
-        <OrbitingLogos client:visible />
-      </div>
     </section>
 
     <!-- ── 3. Skills ─────────────────────────────────────────────── -->

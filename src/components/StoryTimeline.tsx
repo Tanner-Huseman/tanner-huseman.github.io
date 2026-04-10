@@ -148,38 +148,50 @@ export default function StoryTimeline() {
         <div
           key={phase.id}
           id={`phase-${phase.id}`}
-          className="relative flex items-center min-h-screen overflow-hidden"
+          className="relative min-h-screen overflow-hidden flex flex-col"
           style={{ background: 'var(--color-bg)' }}
         >
-          {/* Photo — right half, with gradient mask */}
+          {/* ── Mobile: photo strip at top ─────────────────────── */}
           {phase.photo && (
-            <div className="absolute inset-0 pointer-events-none">
-              {/* Photo panel */}
-              <div className="absolute right-0 top-0 w-full md:w-[55%] h-full overflow-hidden">
+            <div className="md:hidden relative flex-shrink-0 overflow-hidden" style={{ height: '220px' }}>
+              <img
+                src={phase.photo.src}
+                alt={phase.photoAlt ?? ''}
+                className={`w-full h-full object-cover ${phase.photoPosition ?? 'object-center'}`}
+                style={{ filter: 'saturate(0.65) brightness(0.75)' }}
+                loading="lazy"
+                decoding="async"
+              />
+              {/* Gradient fades photo into dark background */}
+              <div
+                className="absolute inset-0"
+                style={{ background: 'linear-gradient(to bottom, transparent 25%, #0a0a0f 90%)' }}
+              />
+            </div>
+          )}
+
+          {/* ── Desktop: right-side photo panel (absolute) ─────── */}
+          {phase.photo && (
+            <div className="hidden md:block absolute inset-0 pointer-events-none">
+              <div className="absolute right-0 top-0 w-[42%] h-full overflow-hidden">
                 <img
                   src={phase.photo.src}
                   alt={phase.photoAlt ?? ''}
                   className={`phase-photo-img w-full h-full object-cover ${phase.photoPosition ?? 'object-center'}`}
-                  style={{ willChange: 'transform' }}
+                  style={{
+                    filter: 'saturate(0.65) brightness(0.8)',
+                    willChange: 'transform',
+                  }}
                   loading="lazy"
                   decoding="async"
                 />
               </div>
-
-              {/* Gradient: solid bg on left → transparent on right */}
+              {/* Gradient: solid bg on left → transparent on right (valid rgba syntax) */}
               <div
                 className="absolute inset-0"
                 style={{
                   background:
-                    'linear-gradient(to right, var(--color-bg) 35%, var(--color-bg)/85% 55%, transparent 80%)',
-                }}
-              />
-
-              {/* Subtle color tint from this phase's accent */}
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  background: `radial-gradient(ellipse at 80% 50%, ${phase.accent}, transparent 70%)`,
+                    'linear-gradient(to right, #0a0a0f 45%, rgba(10,10,15,0.92) 62%, rgba(10,10,15,0.3) 82%, transparent)',
                 }}
               />
             </div>
@@ -192,8 +204,8 @@ export default function StoryTimeline() {
             aria-hidden="true"
           />
 
-          {/* Text content */}
-          <div className="relative z-10 px-8 md:px-16 max-w-xl py-24">
+          {/* Text content — flex-1 so it fills remaining height on mobile */}
+          <div className="relative z-10 px-8 md:px-16 max-w-xl flex-1 flex flex-col justify-center py-10 md:py-24">
             {/* Phase label + period */}
             <p
               className="phase-animate font-mono text-xs tracking-widest uppercase mb-5"
@@ -202,9 +214,10 @@ export default function StoryTimeline() {
               {phase.label}&ensp;·&ensp;{phase.period}
             </p>
 
-            {/* Heading — newlines become visual breaks */}
-            <h3 className="phase-animate font-display text-text mb-6 leading-none"
-              style={{ fontSize: 'clamp(3rem, 8vw, 5.5rem)' }}
+            {/* Heading */}
+            <h3
+              className="phase-animate font-display text-text mb-6 leading-none"
+              style={{ fontSize: 'clamp(2.5rem, 7vw, 5.5rem)' }}
             >
               {phase.heading.split('\n').map((line, i) => (
                 <span key={i} className="block">
