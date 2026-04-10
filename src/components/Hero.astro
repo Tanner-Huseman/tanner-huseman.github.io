@@ -25,7 +25,7 @@ const allLogos = [...inner, ...middle, ...outer];
 
 <section
   id="hero"
-  class="relative min-h-screen grid md:grid-cols-2 overflow-hidden"
+  class="relative min-h-screen flex flex-col md:grid md:grid-cols-2 overflow-hidden"
 >
   <!-- Subtle background glow -->
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -80,36 +80,12 @@ const allLogos = [...inner, ...middle, ...outer];
       </a>
     </div>
 
-    <!-- Mobile: headshot + static logo pills (orbit is desktop-only) -->
-    <div
-      id="hero-mobile-stack"
-      class="md:hidden mt-14 flex flex-col items-center gap-5"
-      style="opacity:0;"
-    >
-      <div
-        class="w-24 h-24 rounded-full overflow-hidden border-2 border-accent/40 flex-shrink-0"
-        style="box-shadow: 0 0 0 6px rgba(108,92,231,0.08), 0 0 30px rgba(108,92,231,0.2);"
-      >
-        <Image
-          src={headshotImg}
-          alt="Tanner Huseman"
-          width={96}
-          height={96}
-          class="w-full h-full object-cover object-top"
-        />
-      </div>
-      <div class="flex flex-wrap justify-center gap-2">
-        {allLogos.map(({ name }) => (
-          <span class="tech-pill">{name}</span>
-        ))}
-      </div>
-    </div>
   </div>
 
   <!-- ── Right column: orbit scene (desktop only) ──────────── -->
   <div
     id="hero-orbit"
-    class="hidden md:flex items-center justify-center relative z-10"
+    class="flex items-center justify-center relative z-10"
     style="opacity:0;"
     aria-label="Tech stack orbit visualization"
     aria-hidden="true"
@@ -146,8 +122,8 @@ const allLogos = [...inner, ...middle, ...outer];
         <Image
           src={headshotImg}
           alt="Tanner Huseman"
-          width={144}
-          height={144}
+          width={192}
+          height={192}
           class="w-full h-full object-cover object-top"
         />
       </div>
@@ -157,7 +133,7 @@ const allLogos = [...inner, ...middle, ...outer];
   <!-- Scroll indicator -->
   <div
     id="hero-scroll"
-    class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+    class="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2"
     style="opacity:0;"
     aria-hidden="true"
   >
@@ -217,14 +193,14 @@ const allLogos = [...inner, ...middle, ...outer];
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 144px;
-    height: 144px;
+    width: 192px;
+    height: 192px;
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid rgba(108, 92, 231, 0.45);
     box-shadow:
-      0 0 0 6px rgba(108, 92, 231, 0.08),
-      0 0 40px rgba(108, 92, 231, 0.25);
+      0 0 0 8px rgba(108, 92, 231, 0.08),
+      0 0 50px rgba(108, 92, 231, 0.28);
   }
 
   /* ── Orbit animations ──────────────────────────────────────── */
@@ -256,6 +232,26 @@ const allLogos = [...inner, ...middle, ...outer];
       transform: translateX(var(--r)) translateY(-50%) rotate(-360deg);
     }
   }
+
+  /* ── Mobile orbit scaling ──────────────────────────────────── */
+  /* Clip the column height and scale scene down to fit narrow viewports */
+  @media (max-width: 767px) {
+    #hero-orbit {
+      height: 300px;
+      overflow: hidden;
+    }
+    .orbit-scene {
+      transform: scale(0.62);
+      transform-origin: center center;
+    }
+    /* Keep animation delays intact — only override transform */
+    @media (prefers-reduced-motion: no-preference) {
+      .orbit-pivot {
+        animation: orbit-spin var(--dur, 12s) linear infinite;
+        animation-delay: var(--delay, 0s);
+      }
+    }
+  }
 </style>
 
 <script>
@@ -271,7 +267,6 @@ const allLogos = [...inner, ...middle, ...outer];
     '#hero-tagline',
     '#hero-ctas',
     '#hero-orbit',
-    '#hero-mobile-stack',
     '#hero-scroll',
   ];
 
@@ -282,9 +277,9 @@ const allLogos = [...inner, ...middle, ...outer];
       .to('#hero-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
       .to('#hero-tagline', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.6')
       .to('#hero-ctas', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-      // Orbit / mobile stack fades in together after CTAs
+      // Orbit fades in after CTAs
       .to(
-        ['#hero-orbit', '#hero-mobile-stack'],
+        '#hero-orbit',
         { opacity: 1, duration: 1, ease: 'power2.out' },
         '-=0.3'
       )
