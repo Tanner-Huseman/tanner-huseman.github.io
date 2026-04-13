@@ -8,7 +8,8 @@ const projects = [
       'Production-grade dbt Core project modeling a realistic financial dataset. Staging → intermediate → mart architecture with SCD Type 2 snapshots, custom tests, and auto-generated docs.',
     tags: ['dbt Core', 'SQL', 'DuckDB', 'GitHub Actions', 'SCD Type 2'],
     href: '/projects/dbt-platform',
-    gradient: 'linear-gradient(90deg, #FF694A, #f5a623)',
+    gradient: 'linear-gradient(135deg, #FF694A, #f5a623)',
+    status: 'in-progress' as const,
   },
   {
     title: 'AI Agent Toolkit',
@@ -16,7 +17,8 @@ const projects = [
       'Composable Python library of AI agent skills built on the Claude API. DocGen, Code Review, and Content Writer agents with typed I/O, retry logic, and full test coverage.',
     tags: ['Python', 'Claude API', 'LangGraph', 'Pydantic', 'Pytest'],
     href: '/projects/ai-agents',
-    gradient: 'linear-gradient(90deg, #6c5ce7, #4facfe)',
+    gradient: 'linear-gradient(135deg, #6c5ce7, #4facfe)',
+    status: 'in-progress' as const,
   },
   {
     title: 'Local Data Platform on Kubernetes',
@@ -24,7 +26,8 @@ const projects = [
       'Fully containerized local data platform mirroring production: Kind cluster, ArgoCD GitOps, Airflow + dbt orchestration, LocalStack, Prometheus/Grafana monitoring.',
     tags: ['Kubernetes', 'ArgoCD', 'Helm', 'Airflow', 'Docker', 'LocalStack'],
     href: '/projects/k8s-platform',
-    gradient: 'linear-gradient(90deg, #326CE5, #00d2a0)',
+    gradient: 'linear-gradient(135deg, #326CE5, #00d2a0)',
+    status: 'in-progress' as const,
   },
   {
     title: 'Serverless Real Estate Data API',
@@ -32,23 +35,26 @@ const projects = [
       'Production-style serverless API serving curated real estate data. FastAPI on Lambda, DynamoDB single-table design, Terraform IaC, auto-generated OpenAPI docs.',
     tags: ['FastAPI', 'AWS Lambda', 'DynamoDB', 'Terraform', 'Python'],
     href: '/projects/serverless-api',
-    gradient: 'linear-gradient(90deg, #FF9900, #FF694A)',
+    gradient: 'linear-gradient(135deg, #FF9900, #FF694A)',
+    status: 'in-progress' as const,
   },
   {
     title: 'How I Built This Portfolio with AI',
     summary:
-      'A 2,500-word technical article documenting the engineering process: why Astro + GSAP + Three.js, the AI-assisted development workflow, and lessons learned.',
+      'A 2,500-word technical article documenting the engineering process: why Astro + GSAP, the AI-assisted development workflow, and lessons learned.',
     tags: ['Technical Writing', 'Astro', 'MDX', 'GSAP', 'AI Workflow'],
     href: '/articles/how-i-built-this',
-    gradient: 'linear-gradient(90deg, #f5a623, #6c5ce7)',
+    gradient: 'linear-gradient(135deg, #f5a623, #6c5ce7)',
+    status: 'in-progress' as const,
   },
   {
     title: 'This Portfolio Site',
     summary:
-      'Open-sourced Astro static site with GSAP ScrollTrigger animations, Three.js orbiting logos, Lighthouse 95+ performance, and GitHub Actions auto-deploy.',
-    tags: ['Astro', 'React', 'GSAP', 'Three.js', 'Tailwind', 'GitHub Pages'],
+      'Open-sourced Astro static site with GSAP ScrollTrigger animations, 3D orbiting logos, Lighthouse 95+ performance, and GitHub Actions auto-deploy.',
+    tags: ['Astro', 'React', 'GSAP', 'Tailwind', 'GitHub Pages'],
     href: 'https://github.com/tanner-huseman/tanner-huseman.github.io',
-    gradient: 'linear-gradient(90deg, #00d2a0, #4facfe)',
+    gradient: 'linear-gradient(135deg, #00d2a0, #4facfe)',
+    status: 'live' as const,
   },
 ];
 ---
@@ -62,13 +68,13 @@ const projects = [
     </h2>
   </div>
 
-  <!-- Grid -->
+  <!-- Single-column stack of wide cards -->
   <div
     id="projects-grid"
-    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+    class="flex flex-col gap-8"
   >
-    {projects.map((project) => (
-      <ProjectCard {...project} />
+    {projects.map((project, i) => (
+      <ProjectCard {...project} index={i} />
     ))}
   </div>
 </section>

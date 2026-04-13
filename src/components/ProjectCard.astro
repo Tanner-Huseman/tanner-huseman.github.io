@@ -4,12 +4,9 @@ interface Props {
   summary: string;
   tags: string[];
   href: string;
-  /** CSS gradient string for the top accent stripe, e.g. 'linear-gradient(90deg, #6c5ce7, #f5a623)' */
   gradient?: string;
-  /** Alt text for the preview image */
-  previewAlt?: string;
-  /** Path to a preview image — optional */
-  previewSrc?: string;
+  status?: 'live' | 'in-progress';
+  index?: number;
 }
 
 const {
@@ -18,38 +15,50 @@ const {
   tags,
   href,
   gradient = 'linear-gradient(90deg, var(--color-accent), var(--color-highlight))',
-  previewAlt = '',
-  previewSrc,
+  status = 'in-progress',
+  index = 0,
 } = Astro.props;
+
+const isReversed = index % 2 === 1;
 ---
 
-<article class="project-card group relative flex flex-col rounded-card border border-border bg-surface overflow-hidden hover:border-accent/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(108,92,231,0.15)]">
-  <!-- Top accent stripe -->
+<article
+  class:list={[
+    'project-card group relative flex flex-col md:flex-row rounded-card border border-border bg-surface overflow-hidden hover:border-accent/40 transition-all duration-300 hover:shadow-[0_0_40px_rgba(108,92,231,0.12)]',
+    { 'md:flex-row-reverse': isReversed },
+  ]}
+>
+  <!-- Visual panel -->
   <div
-    class="h-0.5 w-full flex-shrink-0"
+    class="relative h-48 md:h-auto md:w-2/5 flex-shrink-0 overflow-hidden"
     style={`background: ${gradient};`}
-    aria-hidden="true"
-  ></div>
-
-  <!-- Preview image (optional) -->
-  {previewSrc && (
-    <div class="overflow-hidden bg-[#0f0f18] border-b border-border" style="height: 180px;">
-      <img
-        src={previewSrc}
-        alt={previewAlt}
-        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-        loading="lazy"
-        decoding="async"
-      />
+  >
+    <!-- Abstract pattern overlay -->
+    <div class="absolute inset-0 opacity-15" aria-hidden="true">
+      <svg class="w-full h-full" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="300" cy="50" r="120" stroke="white" stroke-width="0.5" opacity="0.3" />
+        <circle cx="100" cy="250" r="80" stroke="white" stroke-width="0.5" opacity="0.2" />
+        <line x1="0" y1="150" x2="400" y2="100" stroke="white" stroke-width="0.3" opacity="0.15" />
+        <line x1="50" y1="0" x2="350" y2="300" stroke="white" stroke-width="0.3" opacity="0.1" />
+      </svg>
     </div>
-  )}
 
-  <!-- Content -->
-  <div class="flex flex-col flex-1 p-7">
-    <h3 class="font-display text-xl text-text mb-3 group-hover:text-accent transition-colors duration-200">
+    <!-- Status badge on visual panel -->
+    {status === 'in-progress' && (
+      <div class="absolute top-4 left-4 z-10">
+        <span class="font-mono text-xs text-white/90 bg-black/30 backdrop-blur-sm border border-white/20 px-2.5 py-1 rounded-full">
+          In Progress
+        </span>
+      </div>
+    )}
+  </div>
+
+  <!-- Content panel -->
+  <div class="flex flex-col flex-1 p-7 md:p-10">
+    <h3 class="font-display text-xl md:text-2xl text-text mb-3 group-hover:text-accent transition-colors duration-200">
       {title}
     </h3>
-    <p class="font-body text-sm text-muted leading-relaxed mb-6 flex-1">
+    <p class="font-body text-sm md:text-base text-muted leading-relaxed mb-6 flex-1">
       {summary}
     </p>
 
@@ -67,7 +76,7 @@ const {
       aria-label={`View ${title}`}
     >
       View project
-      <span aria-hidden="true">→</span>
+      <span aria-hidden="true">&rarr;</span>
     </a>
   </div>
 </article>
