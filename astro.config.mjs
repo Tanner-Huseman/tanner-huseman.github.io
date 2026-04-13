@@ -14,7 +14,7 @@ export default defineConfig({
   vite: {
     ssr: {
       // These packages use CJS exports that break Astro's SSR pass
-      noExternal: ['three', 'lenis', 'gsap'],
+      noExternal: ['lenis', 'gsap'],
     },
   },
 });
