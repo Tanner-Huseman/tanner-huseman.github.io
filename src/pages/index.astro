@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import StoryTimeline from '../components/StoryTimeline';
-import SkillsCarousel from '../components/SkillsCarousel';
+import SkillsGrid from '../components/SkillsGrid.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import ArticleList from '../components/ArticleList.astro';
 import Footer from '../components/Footer.astro';
@@ -18,47 +18,20 @@ import Footer from '../components/Footer.astro';
     <Hero />
 
     <!-- ── 2. Story ─────────────────────────────────────────────── -->
-    <section id="story" class="relative">
+    <section id="story" class="py-section px-6 md:px-16 max-w-5xl mx-auto">
       <!-- Section header -->
-      <div class="px-6 md:px-16 pt-section pb-16 max-w-7xl mx-auto">
+      <div class="mb-12 md:mb-16">
         <p class="section-label mb-4">The journey</p>
         <h2 class="font-display text-4xl md:text-5xl text-text max-w-2xl">
-          Not exactly a typical path.
+          Three careers. One thread.
         </h2>
       </div>
 
-      <!--
-        StoryTimeline: client:load so GSAP pins are registered before the
-        user starts scrolling. The component handles its own reduced-motion check.
-      -->
       <StoryTimeline client:load />
-
     </section>
 
     <!-- ── 3. Skills ─────────────────────────────────────────────── -->
-    <!--
-      No overflow-hidden here — GSAP's pinSpacing spacer element needs to be
-      visible in the normal flow. Overflow is handled inside the track div.
-    -->
-    <section id="skills-section">
-      <div class="px-6 md:px-16 pt-section pb-16 max-w-7xl mx-auto">
-        <p class="section-label mb-4">What I build with</p>
-        <h2 class="font-display text-4xl md:text-5xl text-text max-w-xl">
-          What I build.
-        </h2>
-      </div>
-
-      <!--
-        Wrapper clips the horizontal overflow on desktop.
-        On mobile it becomes overflow-x-auto for manual swiping.
-        client:load so GSAP can measure scrollWidth at page load time.
-      -->
-      <div class="pb-section overflow-x-hidden">
-        <div class="px-6 md:px-16">
-          <SkillsCarousel client:load />
-        </div>
-      </div>
-    </section>
+    <SkillsGrid />
 
     <!-- ── 4. Projects ───────────────────────────────────────────── -->
     <ProjectGrid />
