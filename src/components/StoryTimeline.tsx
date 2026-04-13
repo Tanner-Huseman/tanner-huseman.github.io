@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import phantomImg from '../assets/images/performance-phantom.jpeg';
@@ -15,9 +15,9 @@ interface Phase {
   heading: string;
   body: string;
   accent: string;
-  photo?: { src: string };
-  photoAlt?: string;
-  photoPosition?: string;
+  photo: { src: string };
+  photoAlt: string;
+  photoPosition: string;
 }
 
 const phases: Phase[] = [
@@ -25,7 +25,7 @@ const phases: Phase[] = [
     id: 'stage',
     label: '01 — Stage',
     period: '2014 – 2020',
-    heading: 'The\nPerformer',
+    heading: 'The Performer',
     body: 'Metropolitan Opera. The Phantom of the Opera on Broadway. Limón Dance Company. Six years performing at the highest level taught me what precision, collaboration under pressure, and public communication actually look like.',
     accent: '#6c5ce7',
     photo: phantomImg,
@@ -36,7 +36,7 @@ const phases: Phase[] = [
     id: 'realestate',
     label: '02 — Real Estate',
     period: '2020 – 2021',
-    heading: 'The\nCloser',
+    heading: 'The Closer',
     body: 'Licensed PA realtor at RE/MAX Main Line. Sold 10 homes in ~6 months. Cold-started a pipeline from zero, learned to move fast with imperfect information, and discovered I was good at figuring out complex systems quickly.',
     accent: '#f5a623',
     photo: realEstateImg,
@@ -47,7 +47,7 @@ const phases: Phase[] = [
     id: 'engineer',
     label: '03 — Engineer',
     period: '2021 – 2023',
-    heading: 'The\nBuilder',
+    heading: 'The Builder',
     body: 'Joined Macquarie as L2. Earned MS Computer Science at Merrimack while working full time. Promoted to L3 within 18 months. Built production data pipelines, internal tooling, and the foundations of a Data-as-a-Service platform.',
     accent: '#00d2a0',
     photo: workShotImg,
@@ -58,7 +58,7 @@ const phases: Phase[] = [
     id: 'architect',
     label: '04 — Data Platform',
     period: '2023 – Present',
-    heading: 'The\nArchitect',
+    heading: 'The Architect',
     body: 'Promoted again to L4 Manager-level IC. Leading V3 of the DaaS platform across AWS, BigQuery, dbt, Airflow, and Kubernetes. Building for scale, governance, and the engineers who depend on the platform every day.',
     accent: '#4facfe',
     photo: whiteboardImg,
@@ -68,7 +68,14 @@ const phases: Phase[] = [
 ];
 
 export default function StoryTimeline() {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const hasHover = useRef(true);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    hasHover.current = window.matchMedia('(hover: hover)').matches;
+  }, []);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -76,172 +83,184 @@ export default function StoryTimeline() {
     ).matches;
 
     if (prefersReducedMotion) {
-      // Show everything statically
-      document
-        .querySelectorAll('.phase-animate')
-        .forEach((el) => ((el as HTMLElement).style.opacity = '1'));
+      gsap.set('.timeline-item', { opacity: 1, y: 0 });
+      gsap.set('.timeline-line', { scaleY: 1 });
       return;
     }
 
+    const items = gsap.utils.toArray<HTMLElement>('.timeline-item');
     const triggers: ScrollTrigger[] = [];
 
-    phases.forEach((phase) => {
-      const el = document.getElementById(`phase-${phase.id}`);
-      if (!el) return;
+    // Animate the vertical line growing downward
+    const lineTween = gsap.from('.timeline-line', {
+      scaleY: 0,
+      transformOrigin: 'top',
+      duration: 1.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.timeline-line',
+        start: 'top 85%',
+      },
+    });
+    if (lineTween.scrollTrigger) triggers.push(lineTween.scrollTrigger);
 
-      const contentEls = el.querySelectorAll<HTMLElement>('.phase-animate');
-      const photoEl = el.querySelector<HTMLElement>('.phase-photo-img');
-
-      // Start content invisible
-      gsap.set(contentEls, { opacity: 0, y: 36 });
-
-      // Pin the phase for 600px of scroll distance
-      const pin = ScrollTrigger.create({
-        trigger: el,
-        start: 'top top',
-        end: '+=600',
-        pin: true,
-        pinSpacing: true,
-        onEnter: () => {
-          gsap.to(contentEls, {
-            opacity: 1,
-            y: 0,
-            duration: 0.75,
-            stagger: 0.12,
-            ease: 'power3.out',
-            overwrite: 'auto',
-          });
-        },
-        onLeaveBack: () => {
-          gsap.set(contentEls, { opacity: 0, y: 36 });
+    // Stagger-reveal each timeline item
+    items.forEach((item) => {
+      const tween = gsap.from(item, {
+        opacity: 0,
+        y: 40,
+        duration: 0.7,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 85%',
         },
       });
-      triggers.push(pin);
-
-      // Subtle parallax on the photo while pinned
-      if (photoEl) {
-        const parallax = ScrollTrigger.create({
-          trigger: el,
-          start: 'top top',
-          end: '+=600',
-          scrub: true,
-          onUpdate: (self) => {
-            gsap.set(photoEl, { y: self.progress * -60 });
-          },
-        });
-        triggers.push(parallax);
-      }
+      if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
     });
 
-    // Give layout time to settle (Lenis + Astro hydration)
-    const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 300);
-
     return () => {
-      clearTimeout(refreshTimer);
       triggers.forEach((t) => t.kill());
     };
   }, []);
 
-  return (
-    <div ref={containerRef}>
-      {phases.map((phase) => (
-        <div
-          key={phase.id}
-          id={`phase-${phase.id}`}
-          className="relative min-h-screen overflow-hidden flex flex-col"
-          style={{ background: 'var(--color-bg)' }}
-        >
-          {/* ── Mobile: full-bleed background photo ────────────── */}
-          {phase.photo && (
-            <div className="md:hidden absolute inset-0">
-              <img
-                src={phase.photo.src}
-                alt={phase.photoAlt ?? ''}
-                className={`w-full h-full object-cover ${phase.photoPosition ?? 'object-center'}`}
-                style={{ filter: 'saturate(0.7) brightness(0.6)' }}
-                loading="lazy"
-                decoding="async"
-              />
-              {/* Gradient: solid dark at bottom (text stage), fades to transparent at top (photo visible) */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'linear-gradient(to top, #0a0a0f 35%, rgba(10,10,15,0.88) 55%, rgba(10,10,15,0.35) 75%, transparent 100%)',
-                }}
-              />
-            </div>
-          )}
+  const handleClick = (id: string) => {
+    if (!hasHover.current) {
+      setExpandedId((prev) => (prev === id ? null : id));
+    }
+  };
 
-          {/* ── Desktop: right-side photo panel (absolute) ─────── */}
-          {phase.photo && (
-            <div className="hidden md:block absolute inset-0 pointer-events-none">
-              <div className="absolute right-0 top-0 w-[42%] h-full overflow-hidden">
+  return (
+    <div ref={containerRef} className="relative">
+      {/* Vertical timeline line */}
+      <div
+        className="timeline-line absolute left-[7px] md:left-[15px] top-0 bottom-0 w-px"
+        style={{ background: 'var(--color-border)' }}
+      />
+
+      {/* Timeline items */}
+      {phases.map((phase, i) => {
+        const isHovered = hoveredId === phase.id;
+        const isExpanded = expandedId === phase.id;
+        const isLast = i === phases.length - 1;
+
+        return (
+          <div
+            key={phase.id}
+            className={`timeline-item relative pl-8 md:pl-12 ${isLast ? '' : 'pb-8 md:pb-12'}`}
+          >
+            {/* Timeline dot */}
+            <div
+              className="absolute left-0 md:left-[8px] top-[10px] w-[15px] h-[15px] rounded-full border-2 -translate-x-1/2 transition-all duration-300 z-10"
+              style={{
+                borderColor: phase.accent,
+                backgroundColor: isHovered || isExpanded ? phase.accent : 'var(--color-bg)',
+                boxShadow: isHovered || isExpanded ? `0 0 16px ${phase.accent}50` : 'none',
+              }}
+            />
+
+            {/* Card */}
+            <div
+              className="group relative rounded-[14px] border overflow-hidden cursor-pointer transition-all duration-300"
+              style={{
+                borderColor: isHovered || isExpanded
+                  ? `${phase.accent}66`
+                  : 'var(--color-border)',
+                background: 'var(--color-surface)',
+                boxShadow: isHovered ? `0 0 40px ${phase.accent}12` : 'none',
+              }}
+              onMouseEnter={() => {
+                if (hasHover.current) setHoveredId(phase.id);
+              }}
+              onMouseLeave={() => {
+                if (hasHover.current) setHoveredId(null);
+              }}
+              onClick={() => handleClick(phase.id)}
+            >
+              {/* Photo wash — desktop hover */}
+              <div
+                className="absolute inset-0 transition-opacity duration-500 pointer-events-none"
+                style={{ opacity: isHovered ? 0.12 : 0 }}
+              >
                 <img
                   src={phase.photo.src}
-                  alt={phase.photoAlt ?? ''}
-                  className={`phase-photo-img w-full h-full object-cover ${phase.photoPosition ?? 'object-center'}`}
-                  style={{
-                    filter: 'saturate(0.65) brightness(0.8)',
-                    willChange: 'transform',
-                  }}
-                  loading="lazy"
-                  decoding="async"
+                  alt=""
+                  aria-hidden="true"
+                  className={`w-full h-full object-cover ${phase.photoPosition}`}
+                  loading="eager"
                 />
               </div>
-              {/* Gradient: solid bg on left → transparent on right (valid rgba syntax) */}
+
+              {/* Mobile expanded photo strip */}
+              {isExpanded && !hasHover.current && (
+                <div className="w-full h-48 overflow-hidden">
+                  <img
+                    src={phase.photo.src}
+                    alt={phase.photoAlt}
+                    className={`w-full h-full object-cover ${phase.photoPosition}`}
+                    style={{ filter: 'saturate(0.7) brightness(0.6)' }}
+                  />
+                </div>
+              )}
+
+              {/* Card content */}
+              <div className="relative z-10 p-5 md:p-8">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <p
+                      className="font-mono text-xs tracking-widest uppercase mb-2"
+                      style={{ color: phase.accent }}
+                    >
+                      {phase.label}&ensp;&middot;&ensp;{phase.period}
+                    </p>
+
+                    <h3
+                      className="font-display text-xl md:text-2xl mb-3 transition-colors duration-300"
+                      style={{ color: isHovered || isExpanded ? phase.accent : 'var(--color-text)' }}
+                    >
+                      {phase.heading}
+                    </h3>
+
+                    <p
+                      className="font-body text-sm md:text-base leading-relaxed max-w-xl"
+                      style={{ color: 'var(--color-muted)' }}
+                    >
+                      {phase.body}
+                    </p>
+                  </div>
+
+                  {/* Mobile expand indicator */}
+                  <div className="md:hidden flex-shrink-0 mt-1">
+                    <svg
+                      className="w-4 h-4 transition-transform duration-300"
+                      style={{
+                        color: 'var(--color-muted)',
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      }}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom accent bar — scales in on hover/expand */}
               <div
-                className="absolute inset-0"
+                className="absolute bottom-0 left-0 w-full h-[2px] transition-transform duration-500"
                 style={{
-                  background:
-                    'linear-gradient(to right, #0a0a0f 45%, rgba(10,10,15,0.92) 62%, rgba(10,10,15,0.3) 82%, transparent)',
+                  background: phase.accent,
+                  transform: isHovered || isExpanded ? 'scaleX(1)' : 'scaleX(0)',
+                  transformOrigin: 'left',
                 }}
               />
             </div>
-          )}
-
-          {/* Left accent bar */}
-          <div
-            className="absolute left-0 top-0 h-full w-0.5 opacity-30"
-            style={{ background: phase.accent }}
-            aria-hidden="true"
-          />
-
-          {/* Text content — anchored to bottom on mobile (over gradient stage), centered on desktop */}
-          <div className="relative z-10 px-8 md:px-16 max-w-xl flex-1 flex flex-col justify-end pb-16 md:justify-center md:py-24">
-            {/* Phase label + period */}
-            <p
-              className="phase-animate font-mono text-xs tracking-widest uppercase mb-5"
-              style={{ color: phase.accent }}
-            >
-              {phase.label}&ensp;·&ensp;{phase.period}
-            </p>
-
-            {/* Heading */}
-            <h3
-              className="phase-animate font-display text-text mb-6 leading-none"
-              style={{ fontSize: 'clamp(2.5rem, 7vw, 5.5rem)' }}
-            >
-              {phase.heading.split('\n').map((line, i) => (
-                <span key={i} className="block">
-                  {line}
-                </span>
-              ))}
-            </h3>
-
-            {/* Body */}
-            <p className="phase-animate font-body text-muted text-lg leading-relaxed max-w-md">
-              {phase.body}
-            </p>
-
-            {/* Accent rule */}
-            <div
-              className="phase-animate mt-10 h-px w-16 rounded-full opacity-60"
-              style={{ background: phase.accent }}
-            />
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
