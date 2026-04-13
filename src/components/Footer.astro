@@ -21,13 +21,21 @@ const links = [
 <footer id="connect" class="py-section px-6 md:px-16 border-t border-border">
   <div class="max-w-4xl mx-auto text-center">
     <p class="section-label mb-6">Get in touch</p>
-    <h2 class="font-display text-4xl md:text-5xl text-text mb-4">
-      Let's connect.
+    <h2 class="font-display text-text mb-4" style="font-size: clamp(2.5rem, 6vw, 4.5rem);">
+      Let's build something.
     </h2>
-    <p class="font-body text-muted text-lg mb-16 max-w-xl mx-auto leading-relaxed">
+    <p class="font-body text-muted text-lg mb-10 max-w-xl mx-auto leading-relaxed">
       I'm always happy to talk shop about data platforms, engineering challenges,
       or whatever you're building.
     </p>
+
+    <!-- Primary CTA -->
+    <a
+      href="mailto:tanner.huseman@gmail.com"
+      class="inline-flex items-center gap-2 px-10 py-4 rounded-full bg-accent text-white font-medium font-body text-lg hover:bg-accent/90 transition-all duration-200 hover:scale-105 mb-12"
+    >
+      Start a conversation
+    </a>
 
     <!-- Social links -->
     <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -55,7 +63,7 @@ const links = [
         © {new Date().getFullYear()} Tanner Huseman
       </p>
       <p class="font-mono text-xs text-muted">
-        Built with Astro · GSAP · Three.js
+        Built with Astro · GSAP · Tailwind
       </p>
     </div>
   </div>
