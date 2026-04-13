@@ -1,0 +1,38 @@
+---
+const skills = [
+  { category: 'Data Platform', icon: '◈', pills: ['DaaS', 'Data Mesh', 'Lakehouse', 'Data Contracts'] },
+  { category: 'Cloud & Infra', icon: '⬡', pills: ['AWS', 'GCP', 'Kubernetes', 'Docker'] },
+  { category: 'Transformation', icon: '△', pills: ['dbt Core', 'SQL', 'Delta Lake', 'Data Quality'] },
+  { category: 'Orchestration', icon: '⊙', pills: ['Airflow', 'Python', 'Event-driven', 'CI/CD'] },
+  { category: 'Dev Tooling', icon: '⌘', pills: ['CLI Tools', 'Policy as Code', 'FastAPI', 'Terraform'] },
+  { category: 'AI / ML', icon: '✦', pills: ['Claude API', 'LangGraph', 'Agents', 'Prompt Eng'] },
+];
+---
+
+<section id="skills-section" class="py-section px-6 md:px-16 max-w-7xl mx-auto">
+  <div class="mb-12">
+    <p class="section-label mb-4">What I build with</p>
+    <h2 class="font-display text-4xl md:text-5xl text-text max-w-xl">
+      What I build.
+    </h2>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+    {skills.map(({ category, icon, pills }) => (
+      <div class="skill-card p-5 md:p-6 rounded-card border border-border bg-surface hover:border-accent/40 transition-colors duration-300">
+        <span class="text-xl text-accent mb-3 block" aria-hidden="true">{icon}</span>
+        <h3 class="font-display text-sm md:text-base text-text mb-4">{category}</h3>
+        <div class="flex flex-wrap gap-1.5">
+          {pills.map((pill) => (
+            <span class="tech-pill">{pill}</span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { revealOnScroll } from '../lib/animations';
+  revealOnScroll('.skill-card', { stagger: 0.08 });
+</script>
