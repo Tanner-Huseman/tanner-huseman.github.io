@@ -125,6 +125,11 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Hero headline glow */
+  .hero-glow {
+    text-shadow: 0 0 80px rgba(108, 92, 231, 0.3);
+  }
 }
 
 /* ── Reduced Motion ─────────────────────────────────────────── */

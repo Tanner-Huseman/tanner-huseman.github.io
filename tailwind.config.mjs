@@ -23,7 +23,7 @@ export default {
         mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
       },
       fontSize: {
-        hero: ['clamp(2.5rem, 7vw, 5rem)', { lineHeight: '1.05', letterSpacing: '-0.02em' }],
+        hero: ['clamp(3rem, 7vw, 5.5rem)', { lineHeight: '1.05', letterSpacing: '-0.03em' }],
       },
       spacing: {
         section: '10rem',

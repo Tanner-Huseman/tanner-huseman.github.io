@@ -2,119 +2,63 @@
 import { Image } from 'astro:assets';
 import headshotImg from '../assets/images/headshot.jpeg';
 
-// 9 logos across 3 orbit rings.
-// Negative animation-delay offsets logos to their starting positions
-// around the ring (spread = duration / count).
-const inner = [
-  { name: 'AWS',    delay: '0s'      },
-  { name: 'dbt',    delay: '-3.33s'  },
-  { name: 'SQL',    delay: '-6.67s'  },
-];
-const middle = [
-  { name: 'Docker',  delay: '0s'      },
-  { name: 'Python',  delay: '-5.33s'  },
-  { name: 'Airflow', delay: '-10.67s' },
-];
-const outer = [
-  { name: 'K8s',       delay: '0s'   },
-  { name: 'BigQuery',  delay: '-8s'  },
-  { name: 'Snowflake', delay: '-16s' },
-];
-const allLogos = [...inner, ...middle, ...outer];
+// 9 logos across 3 orbit rings — JS positions them in 3D
+const inner  = ['AWS', 'dbt', 'SQL'];
+const middle = ['Docker', 'Python', 'Airflow'];
+const outer  = ['K8s', 'BigQuery', 'Snowflake'];
 ---
 
 <section
   id="hero"
-  class="relative min-h-screen flex flex-col md:grid md:grid-cols-2 overflow-hidden"
+  class="relative min-h-screen flex flex-col items-center overflow-hidden px-6 pt-24 md:pt-28 pb-20"
 >
-  <!-- Subtle background glow -->
+  <!-- Animated background: noise grain + shifting glow -->
+  <div class="hero-bg-noise" aria-hidden="true"></div>
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-    <div
-      class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-[0.07]"
-      style="background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);"
-    ></div>
+    <div class="hero-glow-orb"></div>
   </div>
 
-  <!-- ── Left column: text ─────────────────────────────────── -->
-  <div class="flex flex-col justify-center px-8 md:px-16 pt-28 pb-16 md:py-24 relative z-10">
-    <p
-      id="hero-label"
-      class="section-label mb-6"
-      style="opacity:0; transform:translateY(20px);"
-    >
-      Data Platform Engineer
-    </p>
+  <!-- Label -->
+  <p
+    id="hero-label"
+    class="section-label relative z-10 mb-5"
+    style="opacity:0; transform:translateY(20px);"
+  >
+    Data Platform Engineer
+  </p>
 
-    <h1
-      id="hero-title"
-      class="font-display text-hero text-text mb-6 leading-tight"
-      style="opacity:0; transform:translateY(40px);"
-    >
-      Tanner Huseman
-    </h1>
+  <!-- ── Name: one line, tall stretched, near top ─────────────── -->
+  <h1
+    id="hero-title"
+    class="hero-name relative z-0 w-full text-center font-display select-none pointer-events-none"
+    style="opacity:0;"
+    aria-label="Tanner Huseman"
+  >
+    Tanner Huseman
+  </h1>
 
-    <p
-      id="hero-tagline"
-      class="font-body text-xl md:text-2xl text-muted max-w-md mb-12 leading-relaxed"
-      style="opacity:0; transform:translateY(40px);"
-    >
-      From Broadway stages to data platforms.
-    </p>
-
-    <div
-      id="hero-ctas"
-      class="flex flex-col sm:flex-row items-start gap-4"
-      style="opacity:0; transform:translateY(40px);"
-    >
-      <a
-        href="#story"
-        class="px-8 py-3.5 rounded-full bg-accent text-white font-medium font-body hover:bg-accent/90 transition-all duration-200 hover:scale-105"
-      >
-        My story
-      </a>
-      <a
-        href="#projects"
-        class="px-8 py-3.5 rounded-full border border-border text-muted font-medium font-body hover:border-accent/40 hover:text-text transition-all duration-200"
-      >
-        See the work
-      </a>
-    </div>
-
-  </div>
-
-  <!-- ── Right column: orbit scene (desktop only) ──────────── -->
+  <!-- ── Orbit: pulls up to overlap the name ───────────────────── -->
   <div
     id="hero-orbit"
-    class="flex items-center justify-center relative z-10"
+    class="hero-orbit-wrap relative z-10"
     style="opacity:0;"
     aria-label="Tech stack orbit visualization"
     aria-hidden="true"
   >
     <div class="orbit-scene">
-      <!-- Faint ring guides -->
-      <div class="orbit-ring" style="width:220px; height:220px;"></div>
-      <div class="orbit-ring" style="width:330px; height:330px;"></div>
-      <div class="orbit-ring" style="width:440px; height:440px;"></div>
-
-      <!-- Inner ring: r=110px, 10s -->
-      {inner.map(({ name, delay }) => (
-        <div class="orbit-pivot" style={`--dur:10s; --delay:${delay}; --r:110px;`}>
-          <span class="orbit-chip">{name}</span>
-        </div>
+      <!-- Inner ring logos -->
+      {inner.map((name, i) => (
+        <span data-ring="inner" data-index={i} class="orbit-logo">{name}</span>
       ))}
 
-      <!-- Middle ring: r=165px, 16s -->
-      {middle.map(({ name, delay }) => (
-        <div class="orbit-pivot" style={`--dur:16s; --delay:${delay}; --r:165px;`}>
-          <span class="orbit-chip">{name}</span>
-        </div>
+      <!-- Middle ring logos -->
+      {middle.map((name, i) => (
+        <span data-ring="middle" data-index={i} class="orbit-logo">{name}</span>
       ))}
 
-      <!-- Outer ring: r=220px, 24s -->
-      {outer.map(({ name, delay }) => (
-        <div class="orbit-pivot" style={`--dur:24s; --delay:${delay}; --r:220px;`}>
-          <span class="orbit-chip">{name}</span>
-        </div>
+      <!-- Outer ring logos -->
+      {outer.map((name, i) => (
+        <span data-ring="outer" data-index={i} class="orbit-logo">{name}</span>
       ))}
 
       <!-- Center headshot -->
@@ -122,18 +66,38 @@ const allLogos = [...inner, ...middle, ...outer];
         <Image
           src={headshotImg}
           alt="Tanner Huseman"
-          width={192}
-          height={192}
+          width={464}
+          height={464}
           class="w-full h-full object-cover object-top"
         />
       </div>
     </div>
   </div>
 
+  <!-- CTAs — centered below headshot -->
+  <div
+    id="hero-ctas"
+    class="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10 mt-8"
+    style="opacity:0; transform:translateY(40px);"
+  >
+    <a
+      href="#story"
+      class="px-8 py-3.5 rounded-full bg-accent text-white font-medium font-body hover:bg-accent/90 transition-all duration-200 hover:scale-105"
+    >
+      My story
+    </a>
+    <a
+      href="#projects"
+      class="px-8 py-3.5 rounded-full border border-border text-muted font-medium font-body hover:border-accent/40 hover:text-text transition-all duration-200"
+    >
+      See the work
+    </a>
+  </div>
+
   <!-- Scroll indicator -->
   <div
     id="hero-scroll"
-    class="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2"
+    class="absolute bottom-8 flex flex-col items-center gap-2"
     style="opacity:0;"
     aria-hidden="true"
   >
@@ -143,48 +107,80 @@ const allLogos = [...inner, ...middle, ...outer];
 </section>
 
 <style>
+  /* ── Animated background ───────────────────────────────────── */
+  .hero-bg-noise {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  .hero-glow-orb {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    opacity: 0.07;
+    background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+    animation: glow-drift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow-drift {
+    0%   { transform: translate(-50%, -50%) scale(1); }
+    50%  { transform: translate(-40%, -55%) scale(1.1); }
+    100% { transform: translate(-60%, -45%) scale(0.95); }
+  }
+
+  /* ── Name: one line, tall stretched ───────────────────────────── */
+  .hero-name {
+    font-size: clamp(2.8rem, 8.5vw, 7.5rem);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: var(--color-text);
+    /* Stretch letterforms vertically for editorial "tall" feel */
+    transform: scaleY(1.4);
+    transform-origin: top center;
+    text-shadow: 0 0 100px rgba(108, 92, 231, 0.2);
+  }
+
+  /* ── Orbit pulls up to overlap bottom of name ─────────────────── */
+  .hero-orbit-wrap {
+    margin-top: -80px;
+  }
+
   /* ── Orbit scene container ─────────────────────────────────── */
   .orbit-scene {
     position: relative;
-    width: 480px;
-    height: 480px;
+    width: 560px;
+    height: 560px;
   }
 
-  /* Faint ring guide circles */
-  .orbit-ring {
+  /* Logo chips — positioned absolutely, JS sets transform/opacity/zIndex */
+  .orbit-logo {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  /* Zero-size pivot point anchored to orbit center */
-  .orbit-pivot {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-  }
-
-  /* Logo chip — pushed outward by translateX(--r), stays upright via counter-rotation */
-  .orbit-chip {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateX(var(--r)) translateY(-50%);
     font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 500;
-    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 16px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(232, 232, 240, 0.8);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(232, 232, 240, 0.9);
     white-space: nowrap;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
+    will-change: transform, opacity;
+    pointer-events: none;
   }
 
   /* Center headshot circle */
@@ -193,99 +189,68 @@ const allLogos = [...inner, ...middle, ...outer];
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 192px;
-    height: 192px;
+    width: 232px;
+    height: 232px;
     border-radius: 50%;
     overflow: hidden;
+    z-index: 10;
     border: 2px solid rgba(108, 92, 231, 0.45);
     box-shadow:
       0 0 0 8px rgba(108, 92, 231, 0.08),
-      0 0 50px rgba(108, 92, 231, 0.28);
+      0 0 60px rgba(108, 92, 231, 0.3);
   }
 
-  /* ── Orbit animations ──────────────────────────────────────── */
-  /* Only animate when the user hasn't requested reduced motion */
-  @media (prefers-reduced-motion: no-preference) {
-    .orbit-pivot {
-      animation: orbit-spin var(--dur, 12s) linear infinite;
-      animation-delay: var(--delay, 0s);
-    }
-
-    .orbit-chip {
-      animation: orbit-counter var(--dur, 12s) linear infinite;
-      animation-delay: var(--delay, 0s);
-    }
-  }
-
-  @keyframes orbit-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  /* Counter-rotate keeps the chip text upright while the pivot spins */
-  @keyframes orbit-counter {
-    from {
-      transform: translateX(var(--r)) translateY(-50%) rotate(0deg);
-    }
-    to {
-      transform: translateX(var(--r)) translateY(-50%) rotate(-360deg);
-    }
-  }
-
-  /* ── Mobile orbit scaling ──────────────────────────────────── */
-  /* Clip the column height and scale scene down to fit narrow viewports */
+  /* ── Mobile ────────────────────────────────────────────────── */
   @media (max-width: 767px) {
-    #hero-orbit {
-      height: 300px;
-      overflow: hidden;
+    .hero-name {
+      font-size: clamp(2.2rem, 10vw, 4rem);
+      letter-spacing: 0.04em;
+    }
+    .hero-orbit-wrap {
+      margin-top: -40px;
     }
     .orbit-scene {
-      transform: scale(0.62);
+      transform: scale(0.55);
       transform-origin: center center;
-    }
-    /* Keep animation delays intact — only override transform */
-    @media (prefers-reduced-motion: no-preference) {
-      .orbit-pivot {
-        animation: orbit-spin var(--dur, 12s) linear infinite;
-        animation-delay: var(--delay, 0s);
-      }
     }
   }
 </style>
 
 <script>
   import { gsap } from 'gsap';
+  import { buildRingsFromDOM, createOrbitAnimation, applyPositions } from '../lib/orbit3d';
 
   const prefersReducedMotion = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
   ).matches;
 
-  const targets = [
-    '#hero-label',
-    '#hero-title',
-    '#hero-tagline',
-    '#hero-ctas',
-    '#hero-orbit',
-    '#hero-scroll',
-  ];
+  // ── 3D Orbit ──────────────────────────────────────────────
+  const orbitScene = document.querySelector<HTMLElement>('.orbit-scene');
+  if (orbitScene) {
+    const rings = buildRingsFromDOM(orbitScene);
+    const headshot = orbitScene.querySelector<HTMLElement>('.orbit-headshot');
 
+    if (rings.length > 0) {
+      if (prefersReducedMotion) {
+        applyPositions(rings, 0);
+      } else {
+        const orbit = createOrbitAnimation({ rings, headshot: headshot! });
+        orbit.start();
+      }
+    }
+  }
+
+  // ── GSAP entrance timeline ────────────────────────────────
   if (!prefersReducedMotion) {
     const tl = gsap.timeline({ delay: 0.3 });
 
     tl.to('#hero-label', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
-      .to('#hero-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
-      .to('#hero-tagline', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.6')
-      .to('#hero-ctas', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-      // Orbit fades in after CTAs
-      .to(
-        '#hero-orbit',
-        { opacity: 1, duration: 1, ease: 'power2.out' },
-        '-=0.3'
-      )
+      .to('#hero-title', { opacity: 0.15, duration: 1.2, ease: 'power2.out' }, '-=0.4')
+      .to('#hero-orbit', { opacity: 1, duration: 1, ease: 'power2.out' }, '-=0.8')
+      .to('#hero-ctas', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.3')
       .to('#hero-scroll', { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.2');
   } else {
-    // Show everything immediately, no motion
-    gsap.set(targets, { opacity: 1, y: 0 });
+    gsap.set(['#hero-label', '#hero-orbit', '#hero-ctas', '#hero-scroll'], { opacity: 1, y: 0 });
+    gsap.set('#hero-title', { opacity: 0.15 });
   }
 </script>
